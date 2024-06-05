@@ -10,7 +10,7 @@ print("setting env variables for AUTH to use it safely.\n ----------------------
 #---------------------------------------------------------------
 URI = os.getenv("URL")
 
-response = requests.get(url=URI+"manshia_2")
+response = requests.get(url=URI+"nozha")
 response.raise_for_status()
 data = response.json()
 print(data)
