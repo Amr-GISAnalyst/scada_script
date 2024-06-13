@@ -1,16 +1,18 @@
 import requests
 import os
 import arcpy
+from Scada import Deploy
+#----------------------------------------------
 from dotenv import load_dotenv, dotenv_values
 #----------------------------------------------
-load_dotenv()
+
 #----------------------------------------------
 # setting env variables for AUTH to use it safely.
 print("setting env variables for AUTH to use it safely.\n ---------------------------------------")
 #---------------------------------------------------------------
-URI = os.getenv("URL")
+#listing fields in 3 featureclasses.
+print("listing fields in both featureclasses.\n ---------------------------------------")
+#------------------------------------------
 
-response = requests.get(url=URI+"nozha")
-response.raise_for_status()
-data = response.json()
-print(data)
+raw = Deploy("rawRecords")
+raw.request_data("manshia")
