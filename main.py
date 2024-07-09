@@ -3,8 +3,8 @@ import os
 import requests
 #env variable
 print("setting env variables----------------------------")
-GDB = os.environ.get('DATABASE')
-URL = os.environ.get('LINK')
+GDB = os.environ.get("DATABASE")
+URL = os.environ.get("LINK")
 
 arcpy.env.overwriteOutput = True
 arcpy.env.workspace = GDB
@@ -13,13 +13,13 @@ sensor_fields = []
 
 #listing fields
 print("Listing fields------------------------------------")
-fields = arcpy.ListFields("rawRecords")
+fields = arcpy.ListFields("raw_records")
 for field in fields:
-    if field.name == "Shape" or field.name == "OBJECTID" or field.name == "sensorid" or field.name == "description" or field.name == "X" or field.name == "Y":
+    if field.name == "Shape" or field.name == "OBJECTID" or field.name == "sensor_id" or field.name == "description" or field.name == "X" or field.name == "Y":
         pass
     else:
-        sensor_fields.append(field.name)       
-print(sensor_fields)
+        sensor_fields.append(field.name)     
+# print(sensor_fields)
 
 treated = []
 raw = []
@@ -31,6 +31,7 @@ response = requests.get(URL + "roundpoint")
 response.raise_for_status()
 data = response.json()
 sensors = (data["data"])
+print(sensors)
 # print(sensors)
 
 for item in sensors:
@@ -46,17 +47,15 @@ print("Starting Editting----------------------------------")
 edit = arcpy.da.Editor(GDB)
 edit.startEditing(with_undo=False, multiuser_mode=True)
 edit.startOperation()
-for sensor in range(len(raw)):
-    tg = raw[sensor]["TagName"]
-print(tg)    
-#     with arcpy.da.UpdateCursor("sensors\\rawRecords", sensor_fields, f"sensorid = {tg}") as data_edit:
-#         for row in data_edit:
-#             for i in range(len(sensor_fields)):
-#                 if raw[sensor]["last_value"] == "0.00":
-#                     row[i] = None #continue
-#                     data_edit.updateRow(row) 
-#                 else:
-#                     row[i] = float(raw[sensor]["last_value"])
-#             data_edit.updateRow(row)
-# edit.stopOperation()
-# edit.stopEditing(save_changes=True)
+for sensor in range(len(raw)): 
+    with arcpy.da.UpdateCursor("raw_records", sensor_fields, f"sensor_id = '{raw[sensor]['TagName']}'") as input_row:
+        for row in input_row:
+            for i in range(len(sensor_fields)):
+                if raw[sensor]["last_value"] == "0.00":
+                   row[i] = None #continue
+                   input_row.updateRow(row) 
+                else:
+                   row[i] = raw[sensor]["last_value"]
+            input_row.updateRow(row)
+edit.stopOperation()
+edit.stopEditing(save_changes=True)
