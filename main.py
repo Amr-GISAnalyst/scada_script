@@ -2,7 +2,7 @@ import arcpy
 import os
 import requests
 #env variable
-print("setting env variables----------------------------")
+# print("setting env variables----------------------------")
 GDB = os.environ.get("DATABASE")
 URL = os.environ.get("LINK")
 
@@ -19,7 +19,7 @@ for field in fields:
         pass
     else:
         sensor_fields.append(field.name)     
-# print(sensor_fields)
+print(sensor_fields)
 
 treated = []
 raw = []
@@ -32,7 +32,6 @@ response.raise_for_status()
 data = response.json()
 sensors = (data["data"])
 print(sensors)
-# print(sensors)
 
 for item in sensors:
     if item == "rawRecords":
@@ -55,7 +54,7 @@ for sensor in range(len(raw)):
                    row[i] = None #continue
                    input_row.updateRow(row) 
                 else:
-                   row[i] = raw[sensor]["last_value"]
+                   row[i] = float(raw[sensor]["last_value"])
             input_row.updateRow(row)
 edit.stopOperation()
 edit.stopEditing(save_changes=True)
