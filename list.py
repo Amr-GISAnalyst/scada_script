@@ -4,6 +4,7 @@ import os
 GDB = os.environ.get("DATABASE")
 arcpy.env.workspace = GDB
 arcpy.env.overwriteOutput = True
+edit_field = []
 
 class List:
     def __init__(self):
@@ -17,4 +18,4 @@ class List:
             if field.name == "Shape" or field.name == "OBJECTID" or field.name == "sensor_id" or field.name == "description" or field.name == "X" or field.name == "Y":
                 pass
             else:
-                self.edit_field.append(field.name)
+                edit_field.append(field.name)
